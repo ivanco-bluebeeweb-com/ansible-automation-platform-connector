@@ -112,30 +112,6 @@ async def delete_workflow_template(ctx, params: DeleteWorkflowJobTemplateParams)
 
 @chat.function(
     "launch_workflow_template",
-    "Launch a Workflow Job Template now.",
-    action_type="write", chain_callable=True, data_model=JobLaunchResult,
-    event="ansible-automation-platform-connector.launch_workflow_template",
-    effects=["ansible.workflow_job.launched"],
-)
-async def launch_workflow_template(ctx, params: LaunchWorkflowJobTemplateParams) -> ActionResult:
-    """Launch a workflow job template."""
-    r = await resolve_connection(ctx, params.connection_id)
-    if isinstance(r, ActionResult):
-        return r
-    conn, token = r
-    payload = {"extra_vars": params.extra_vars} if params.extra_vars else {}
-    try:
-        d = await ac.post_action(ctx, conn["api_base_url"], token, "workflow_job_templates", params.resource_id, "launch", payload)
-    except ac.ClientFail as e:
-        return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(
-        JobLaunchResult(job_id=d.get("workflow_job", d.get("id", 0)), status=d.get("status", "pending"), detail="Launched."),
-        message="Workflow job launched.",
-    )
-
-
-@chat.function(
-    "launch_workflow_template",
     "Launch a Workflow Job Template now, running its whole node graph.",
     action_type="write", chain_callable=True, data_model=JobLaunchResult,
     event="ansible-automation-platform-connector.launch_workflow_template",

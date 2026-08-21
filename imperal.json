@@ -9282,7 +9282,7 @@
     },
     {
       "name": "create_user",
-      "description": "Create a new User on the connected Controller.",
+      "description": "Create a new User in the connected Controller.",
       "action_type": "write",
       "chain_callable": true,
       "effects": [
@@ -11524,7 +11524,7 @@
       "slot": "left",
       "title": "Ansible",
       "tree": {},
-      "icon": "\u2699\ufe0f",
+      "icon": "⚙️",
       "refresh": "manual",
       "center_overlay": false,
       "default_width": 320,
@@ -11545,7 +11545,7 @@
       "slot": "center",
       "title": "Ansible",
       "tree": {},
-      "icon": "\u2699\ufe0f",
+      "icon": "⚙️",
       "refresh": "manual",
       "center_overlay": true
     },
