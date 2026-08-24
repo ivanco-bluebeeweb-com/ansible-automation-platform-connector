@@ -129,7 +129,7 @@ async def relaunch_job(ctx, params: RelaunchJobParams) -> ActionResult:
 @chat.function(
     "bulk_cancel_jobs",
     "Cancel several Jobs in one call, by explicit job ids. Continues past per-item failures and reports per-job results.",
-    action_type="write", chain_callable=True, data_model=BulkJobResult,
+    action_type="destructive", chain_callable=True, data_model=BulkJobResult,
     event="ansible-automation-platform-connector.bulk_cancel_jobs",
     effects=["ansible.job.canceled"],
 )
