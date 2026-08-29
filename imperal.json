@@ -2121,7 +2121,7 @@
     {
       "name": "bulk_cancel_jobs",
       "description": "Cancel several Jobs in one call, by explicit job ids. Continues past per-item failures and reports per-job results.",
-      "action_type": "write",
+      "action_type": "destructive",
       "chain_callable": true,
       "effects": [
         "ansible.job.canceled"
