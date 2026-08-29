@@ -156,6 +156,9 @@ async def ansible_connect_panel(ctx, **kwargs) -> object:
         ui.Text(f"Job Templates -- {first.get('label') or first.get('api_base_url', '')}", variant="subtitle"),
         _job_templates_section(templates),
         ui.Divider(),
+        ui.Button("View controller audit", variant="primary", size="sm", full_width=True,
+                  icon="LayoutDashboard", on_click=ui.Call("__panel__ansible_center")),
+        ui.Divider(),
         _settings_button(),
     ])
 
@@ -203,7 +206,29 @@ async def ansible_center_panel(ctx, **kwargs) -> object:
     slot="center" panel is registered but the Panel app never fetches it
     at session-init without that flag. Text is the shared canonical
     wording -- must stay identical across every app in this situation."""
-    return ui.Empty(
-        message="Nothing to show here -- this app is managed entirely from the sidebar.",
-        icon="👈",
-    )
+    connections = await h._load_connections(ctx)
+    if not connections:
+        return ui.Empty(message="Connect an Automation Controller from the sidebar to see it here.", icon="⚙️")
+
+    import handlers_audit as ha
+    from schemas import AuditControllerParams
+    conn_id = connections[0].get("id", "")
+    body: list[ui.UINode] = [ui.Text("Controller audit", variant="subtitle")]
+    audit_result = await ha.audit_controller(ctx, AuditControllerParams(connection_id=conn_id))
+    if audit_result.success and audit_result.data:
+        r = audit_result.data
+        body.append(ui.Stats(children=[
+            ui.Stat(label="Running jobs", value=str(r.running_jobs)),
+            ui.Stat(label="Failed (24h)", value=str(r.failed_jobs_24h)),
+        ]))
+        for row in r.rows[:15]:
+            color = "red" if row.failure_rate_pct >= 25 else ("yellow" if row.failure_rate_pct > 0 else "green")
+            body.append(ui.Stack(direction="h", gap=2, align="center", children=[
+                ui.Badge(label=row.last_status or "UNKNOWN", color=color),
+                ui.Text(row.job_template_name, variant="body"),
+                ui.Text(f"failure rate: {row.failure_rate_pct:.0f}% · runs: {row.total_runs}", variant="caption"),
+            ]))
+    else:
+        body.append(ui.Text("Could not load the controller audit.", variant="caption"))
+
+    return ui.Stack(direction="v", gap=3, align="stretch", children=body)
