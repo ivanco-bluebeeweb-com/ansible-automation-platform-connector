@@ -39,6 +39,8 @@ class ProviderConnection(sdl.Entity):
 
 
 class ProviderConnectionList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[ProviderConnection]
 
 
@@ -47,6 +49,8 @@ class DisconnectAnsibleParams(BaseModel):
 
 
 class DeleteResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     ok: bool
     detail: str = ""
 
@@ -70,6 +74,7 @@ class _IdParams(_ConnScopedParams):
 
 
 class JobTemplate(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     description: str = ""
@@ -82,6 +87,8 @@ class JobTemplate(sdl.Entity):
 
 
 class JobTemplateList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[JobTemplate]
     count: int = 0
 
@@ -122,6 +129,8 @@ class LaunchJobTemplateParams(_IdParams):
 
 
 class JobLaunchResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     job_id: int
     status: str
     detail: str = ""
@@ -133,6 +142,7 @@ class JobLaunchResult(sdl.Entity):
 
 
 class Job(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     status: str
@@ -144,6 +154,8 @@ class Job(sdl.Entity):
 
 
 class JobList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Job]
     count: int = 0
 
@@ -162,6 +174,8 @@ class GetJobStdoutParams(_IdParams):
 
 
 class JobStdout(sdl.Entity):
+    id: str = ""
+    title: str = ""
     job_id: int
     output: str
 
@@ -179,12 +193,16 @@ class BulkJobIdsParams(_ConnScopedParams):
 
 
 class BulkJobResultItem(sdl.Entity):
+    id: str = ""
+    title: str = ""
     job_id: int
     ok: bool
     detail: str = ""
 
 
 class BulkJobResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[BulkJobResultItem]
 
 
@@ -193,6 +211,7 @@ class ListJobEventsParams(_IdParams):
 
 
 class JobEvent(sdl.Entity):
+    title: str = ""
     id: int
     event: str
     stdout: str = ""
@@ -202,6 +221,8 @@ class JobEvent(sdl.Entity):
 
 
 class JobEventList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[JobEvent]
 
 
@@ -211,6 +232,7 @@ class JobEventList(sdl.Entity):
 
 
 class WorkflowJobTemplate(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     description: str = ""
@@ -218,6 +240,8 @@ class WorkflowJobTemplate(sdl.Entity):
 
 
 class WorkflowJobTemplateList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[WorkflowJobTemplate]
     count: int = 0
 
@@ -250,6 +274,7 @@ class ListWorkflowJobsParams(_ConnScopedParams):
 
 
 class WorkflowJob(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     status: str
@@ -258,6 +283,8 @@ class WorkflowJob(sdl.Entity):
 
 
 class WorkflowJobList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[WorkflowJob]
     count: int = 0
 
@@ -267,12 +294,15 @@ class ListWorkflowNodesParams(_IdParams):
 
 
 class WorkflowNode(sdl.Entity):
+    title: str = ""
     id: int
     unified_job_template: int | None = None
     job: int | None = None
 
 
 class WorkflowNodeList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[WorkflowNode]
 
 
@@ -281,6 +311,7 @@ class ListWorkflowApprovalsParams(_ConnScopedParams):
 
 
 class WorkflowApproval(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     status: str
@@ -288,6 +319,8 @@ class WorkflowApproval(sdl.Entity):
 
 
 class WorkflowApprovalList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[WorkflowApproval]
 
 
@@ -305,6 +338,7 @@ class DenyWorkflowParams(_IdParams):
 
 
 class Project(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     description: str = ""
@@ -314,6 +348,8 @@ class Project(sdl.Entity):
 
 
 class ProjectList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Project]
     count: int = 0
 
@@ -355,6 +391,7 @@ class SyncProjectParams(_IdParams):
 
 
 class Inventory(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     description: str = ""
@@ -363,6 +400,8 @@ class Inventory(sdl.Entity):
 
 
 class InventoryList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Inventory]
     count: int = 0
 
@@ -391,6 +430,7 @@ class DeleteInventoryParams(_IdParams):
 
 
 class Host(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     description: str = ""
@@ -399,6 +439,8 @@ class Host(sdl.Entity):
 
 
 class HostList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Host]
     count: int = 0
 
@@ -425,6 +467,7 @@ class DeleteHostParams(_ConnScopedParams):
 
 
 class Group(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     description: str = ""
@@ -432,6 +475,8 @@ class Group(sdl.Entity):
 
 
 class GroupList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Group]
 
 
@@ -449,6 +494,7 @@ class DeleteGroupParams(_ConnScopedParams):
 
 
 class InventorySource(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     source: str = ""
@@ -456,6 +502,8 @@ class InventorySource(sdl.Entity):
 
 
 class InventorySourceList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[InventorySource]
 
 
@@ -473,6 +521,7 @@ class SyncInventorySourceParams(_ConnScopedParams):
 
 
 class Credential(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     description: str = ""
@@ -481,6 +530,8 @@ class Credential(sdl.Entity):
 
 
 class CredentialList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Credential]
     count: int = 0
 
@@ -505,12 +556,15 @@ class DeleteCredentialParams(_IdParams):
 
 
 class CredentialType(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     kind: str = ""
 
 
 class CredentialTypeList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[CredentialType]
 
 
@@ -524,6 +578,7 @@ class ListCredentialTypesParams(_ConnScopedParams):
 
 
 class Schedule(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     rrule: str = ""
@@ -532,6 +587,8 @@ class Schedule(sdl.Entity):
 
 
 class ScheduleList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Schedule]
 
 
@@ -559,12 +616,15 @@ class DeleteScheduleParams(_ConnScopedParams):
 
 
 class Organization(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     description: str = ""
 
 
 class OrganizationList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Organization]
 
 
@@ -578,12 +638,15 @@ class CreateOrganizationParams(_ConnScopedParams):
 
 
 class Team(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     organization: int | None = None
 
 
 class TeamList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Team]
 
 
@@ -597,6 +660,7 @@ class CreateTeamParams(_ConnScopedParams):
 
 
 class AAPUser(sdl.Entity):
+    title: str = ""
     id: int
     username: str
     email: str = ""
@@ -604,6 +668,8 @@ class AAPUser(sdl.Entity):
 
 
 class AAPUserList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[AAPUser]
 
 
@@ -637,6 +703,7 @@ class RunAdHocCommandParams(_ConnScopedParams):
 
 
 class AdHocCommand(sdl.Entity):
+    title: str = ""
     id: int
     status: str
     module_name: str = ""
@@ -647,6 +714,8 @@ class ListAdHocCommandsParams(_ConnScopedParams):
 
 
 class AdHocCommandList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[AdHocCommand]
 
 
@@ -656,12 +725,15 @@ class AdHocCommandList(sdl.Entity):
 
 
 class NotificationTemplate(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     notification_type: str = ""
 
 
 class NotificationTemplateList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[NotificationTemplate]
 
 
@@ -690,6 +762,7 @@ class TestNotificationTemplateParams(_IdParams):
 
 
 class Instance(sdl.Entity):
+    title: str = ""
     id: int
     hostname: str
     node_type: str = ""
@@ -698,6 +771,8 @@ class Instance(sdl.Entity):
 
 
 class InstanceList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[Instance]
 
 
@@ -706,12 +781,15 @@ class ListInstancesParams(_ConnScopedParams):
 
 
 class InstanceGroup(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     capacity: int = 0
 
 
 class InstanceGroupList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[InstanceGroup]
 
 
@@ -725,12 +803,15 @@ class ListInstanceGroupsParams(_ConnScopedParams):
 
 
 class ExecutionEnvironment(sdl.Entity):
+    title: str = ""
     id: int
     name: str
     image: str = ""
 
 
 class ExecutionEnvironmentList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[ExecutionEnvironment]
 
 
@@ -744,6 +825,7 @@ class ListExecutionEnvironmentsParams(_ConnScopedParams):
 
 
 class ActivityStreamEntry(sdl.Entity):
+    title: str = ""
     id: int
     operation: str
     changes: str = ""
@@ -752,6 +834,8 @@ class ActivityStreamEntry(sdl.Entity):
 
 
 class ActivityStreamList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     items: list[ActivityStreamEntry]
 
 
@@ -769,6 +853,8 @@ class AuditControllerParams(_ConnScopedParams):
 
 
 class AuditRow(sdl.Entity):
+    id: str = ""
+    title: str = ""
     job_template_name: str
     last_status: str
     failure_rate_pct: float = 0.0
@@ -776,6 +862,8 @@ class AuditRow(sdl.Entity):
 
 
 class AuditControllerReport(sdl.Entity):
+    id: str = ""
+    title: str = ""
     generated_at: str
     rows: list[AuditRow]
     running_jobs: int = 0
