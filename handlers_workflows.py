@@ -42,7 +42,7 @@ async def list_workflow_templates(ctx, params: ListWorkflowJobTemplatesParams) -
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [_to_wjt(d) for d in rows]
-    return ActionResult.ok(WorkflowJobTemplateList(title="Workflow Job Templates", items=items, count=len(items)))
+    return ActionResult.success(WorkflowJobTemplateList(title="Workflow Job Templates", items=items, count=len(items)), summary="Workflow templates listed.")
 
 
 @chat.function(
@@ -61,7 +61,7 @@ async def get_workflow_job_template(ctx, params: GetWorkflowJobTemplateParams) -
         d = await ac.get_resource(ctx, conn["api_base_url"], token, "workflow_job_templates", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_wjt(d))
+    return ActionResult.success(_to_wjt(d), summary="Workflow job template retrieved.")
 
 
 @chat.function(
@@ -87,7 +87,7 @@ async def create_workflow_template(ctx, params: CreateWorkflowJobTemplateParams)
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "workflow_job_templates", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_wjt(d), message="Workflow Job Template created.")
+    return ActionResult.success(_to_wjt(d), message="Workflow Job Template created.", summary="Workflow template created.")
 
 
 @chat.function(
@@ -107,7 +107,7 @@ async def delete_workflow_template(ctx, params: DeleteWorkflowJobTemplateParams)
         await ac.delete_resource(ctx, conn["api_base_url"], token, "workflow_job_templates", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Workflow Job Template deleted."), message="Workflow Job Template deleted.")
+    return ActionResult.success(DeleteResult(ok=True, detail="Workflow Job Template deleted."), message="Workflow Job Template deleted.", summary="Workflow template deleted.")
 
 
 @chat.function(
@@ -130,7 +130,7 @@ async def launch_workflow_template(ctx, params: LaunchWorkflowJobTemplateParams)
         d = await ac.post_action(ctx, conn["api_base_url"], token, "workflow_job_templates", params.resource_id, "launch", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(JobLaunchResult(job_id=d.get("id", 0), status=d.get("status", ""), name=d.get("name", "")), message="Workflow job launched.")
+    return ActionResult.success(JobLaunchResult(job_id=d.get("id", 0), status=d.get("status", ""), name=d.get("name", "")), message="Workflow job launched.", summary="Launch workflow template done.")
 
 
 @chat.function(
@@ -153,7 +153,7 @@ async def list_workflow_jobs(ctx, params: ListWorkflowJobsParams) -> ActionResul
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [WorkflowJob(id=d.get("id", 0), name=d.get("name", ""), status=d.get("status", ""), started=str(d.get("started") or ""), finished=str(d.get("finished") or "")) for d in rows]
-    return ActionResult.ok(WorkflowJobList(title="Workflow Jobs", items=items, count=len(items)))
+    return ActionResult.success(WorkflowJobList(title="Workflow Jobs", items=items, count=len(items)), summary="Workflow jobs listed.")
 
 
 @chat.function(
@@ -173,7 +173,7 @@ async def list_workflow_nodes(ctx, params: ListWorkflowNodesParams) -> ActionRes
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [WorkflowNode(id=d.get("id", 0), unified_job_template=d.get("unified_job_template"), job=d.get("job")) for d in rows]
-    return ActionResult.ok(WorkflowNodeList(title="Workflow Nodes", items=items))
+    return ActionResult.success(WorkflowNodeList(title="Workflow Nodes", items=items), summary="Workflow nodes listed.")
 
 
 @chat.function(
@@ -193,7 +193,7 @@ async def list_workflow_approvals(ctx, params: ListWorkflowApprovalsParams) -> A
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [WorkflowApproval(id=d.get("id", 0), name=d.get("name", ""), status=d.get("status", ""), can_approve=d.get("can_approve_or_deny", True)) for d in rows]
-    return ActionResult.ok(WorkflowApprovalList(title="Workflow Approvals", items=items))
+    return ActionResult.success(WorkflowApprovalList(title="Workflow Approvals", items=items), summary="Workflow approvals listed.")
 
 
 @chat.function(
@@ -213,7 +213,7 @@ async def approve_workflow(ctx, params: ApproveWorkflowParams) -> ActionResult:
         await ac.post_action(ctx, conn["api_base_url"], token, "workflow_approvals", params.resource_id, "approve")
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Workflow approval approved."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Workflow approval approved."), summary="Approve workflow done.")
 
 
 @chat.function(
@@ -233,4 +233,4 @@ async def deny_workflow(ctx, params: DenyWorkflowParams) -> ActionResult:
         await ac.post_action(ctx, conn["api_base_url"], token, "workflow_approvals", params.resource_id, "deny")
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Workflow approval denied."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Workflow approval denied."), summary="Deny workflow done.")

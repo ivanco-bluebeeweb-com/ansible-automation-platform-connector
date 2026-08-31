@@ -47,7 +47,7 @@ async def list_activity_stream(ctx, params: ListActivityStreamParams) -> ActionR
             changes=str(d.get("changes", ""))[:500], timestamp=str(d.get("timestamp") or ""),
             actor=actor,
         ))
-    return ActionResult.ok(ActivityStreamList(title="Activity Stream", items=items))
+    return ActionResult.success(ActivityStreamList(title="Activity Stream", items=items), summary="Activity stream listed.")
 
 
 @chat.function(
@@ -106,8 +106,8 @@ async def audit_controller(ctx, params: AuditControllerParams) -> ActionResult:
             failure_rate_pct=rate, total_runs=total,
         ))
 
-    return ActionResult.ok(AuditControllerReport(
+    return ActionResult.success(AuditControllerReport(
         title="Controller Audit",
         generated_at=now.isoformat(),
         rows=rows, running_jobs=running_jobs, failed_jobs_24h=failed_24h,
-    ))
+    ), summary="Controller audit ready.")

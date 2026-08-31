@@ -44,7 +44,7 @@ async def list_projects(ctx, params: ListProjectsParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [_to_project(d) for d in rows]
-    return ActionResult.ok(ProjectList(title="Projects", items=items, count=len(items)))
+    return ActionResult.success(ProjectList(title="Projects", items=items, count=len(items)), summary="Projects listed.")
 
 
 @chat.function(
@@ -63,7 +63,7 @@ async def get_project(ctx, params: GetProjectParams) -> ActionResult:
         d = await ac.get_resource(ctx, conn["api_base_url"], token, "projects", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_project(d))
+    return ActionResult.success(_to_project(d), summary="Project retrieved.")
 
 
 @chat.function(
@@ -90,7 +90,7 @@ async def create_project(ctx, params: CreateProjectParams) -> ActionResult:
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "projects", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_project(d), message="Project created.")
+    return ActionResult.success(_to_project(d), message="Project created.", summary="Project created.")
 
 
 @chat.function(
@@ -117,7 +117,7 @@ async def update_project(ctx, params: UpdateProjectParams) -> ActionResult:
         d = await ac.update_resource(ctx, conn["api_base_url"], token, "projects", params.resource_id, payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_project(d), message="Project updated.")
+    return ActionResult.success(_to_project(d), message="Project updated.", summary="Project updated.")
 
 
 @chat.function(
@@ -137,7 +137,7 @@ async def delete_project(ctx, params: DeleteProjectParams) -> ActionResult:
         await ac.delete_resource(ctx, conn["api_base_url"], token, "projects", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Project deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Project deleted."), summary="Project deleted.")
 
 
 @chat.function(
@@ -157,7 +157,7 @@ async def sync_project(ctx, params: SyncProjectParams) -> ActionResult:
         await ac.post_action(ctx, conn["api_base_url"], token, "projects", params.resource_id, "update")
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Project sync started."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Project sync started."), summary="Project sync requested.")
 
 
 @chat.function(
@@ -177,7 +177,7 @@ async def list_inventories(ctx, params: ListInventoriesParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [_to_inventory(d) for d in rows]
-    return ActionResult.ok(InventoryList(title="Inventories", items=items, count=len(items)))
+    return ActionResult.success(InventoryList(title="Inventories", items=items, count=len(items)), summary="Inventories listed.")
 
 
 @chat.function(
@@ -196,7 +196,7 @@ async def get_inventory(ctx, params: GetInventoryParams) -> ActionResult:
         d = await ac.get_resource(ctx, conn["api_base_url"], token, "inventories", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_inventory(d))
+    return ActionResult.success(_to_inventory(d), summary="Inventory retrieved.")
 
 
 @chat.function(
@@ -219,7 +219,7 @@ async def create_inventory(ctx, params: CreateInventoryParams) -> ActionResult:
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "inventories", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_inventory(d), message="Inventory created.")
+    return ActionResult.success(_to_inventory(d), message="Inventory created.", summary="Inventory created.")
 
 
 @chat.function(
@@ -244,7 +244,7 @@ async def update_inventory(ctx, params: UpdateInventoryParams) -> ActionResult:
         d = await ac.update_resource(ctx, conn["api_base_url"], token, "inventories", params.resource_id, payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_inventory(d), message="Inventory updated.")
+    return ActionResult.success(_to_inventory(d), message="Inventory updated.", summary="Inventory updated.")
 
 
 @chat.function(
@@ -264,7 +264,7 @@ async def delete_inventory(ctx, params: DeleteInventoryParams) -> ActionResult:
         await ac.delete_resource(ctx, conn["api_base_url"], token, "inventories", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Inventory deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Inventory deleted."), summary="Inventory deleted.")
 
 
 @chat.function(
@@ -284,7 +284,7 @@ async def list_hosts(ctx, params: ListHostsParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [Host(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", ""), enabled=d.get("enabled", True), inventory=d.get("inventory")) for d in rows]
-    return ActionResult.ok(HostList(title="Hosts", items=items, count=len(items)))
+    return ActionResult.success(HostList(title="Hosts", items=items, count=len(items)), summary="Hosts listed.")
 
 
 @chat.function(
@@ -307,7 +307,7 @@ async def create_host(ctx, params: CreateHostParams) -> ActionResult:
         d = await ac.post_action(ctx, conn["api_base_url"], token, "inventories", params.resource_id, "hosts", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(Host(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", ""), enabled=d.get("enabled", True), inventory=d.get("inventory")), message="Host created.")
+    return ActionResult.success(Host(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", ""), enabled=d.get("enabled", True), inventory=d.get("inventory")), message="Host created.", summary="Host created.")
 
 
 @chat.function(
@@ -332,7 +332,7 @@ async def update_host(ctx, params: UpdateHostParams) -> ActionResult:
         d = await ac.update_resource(ctx, conn["api_base_url"], token, "hosts", params.host_id, payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(Host(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", ""), enabled=d.get("enabled", True), inventory=d.get("inventory")), message="Host updated.")
+    return ActionResult.success(Host(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", ""), enabled=d.get("enabled", True), inventory=d.get("inventory")), message="Host updated.", summary="Host updated.")
 
 
 @chat.function(
@@ -352,7 +352,7 @@ async def delete_host(ctx, params: DeleteHostParams) -> ActionResult:
         await ac.delete_resource(ctx, conn["api_base_url"], token, "hosts", params.host_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Host deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Host deleted."), summary="Host deleted.")
 
 
 @chat.function(
@@ -372,7 +372,7 @@ async def list_groups(ctx, params: ListGroupsParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [Group(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", ""), inventory=d.get("inventory")) for d in rows]
-    return ActionResult.ok(GroupList(title="Groups", items=items))
+    return ActionResult.success(GroupList(title="Groups", items=items), summary="Groups listed.")
 
 
 @chat.function(
@@ -395,7 +395,7 @@ async def create_group(ctx, params: CreateGroupParams) -> ActionResult:
         d = await ac.post_action(ctx, conn["api_base_url"], token, "inventories", params.resource_id, "groups", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(Group(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", ""), inventory=d.get("inventory")), message="Group created.")
+    return ActionResult.success(Group(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", ""), inventory=d.get("inventory")), message="Group created.", summary="Group created.")
 
 
 @chat.function(
@@ -415,7 +415,7 @@ async def delete_group(ctx, params: DeleteGroupParams) -> ActionResult:
         await ac.delete_resource(ctx, conn["api_base_url"], token, "groups", params.group_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Group deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Group deleted."), summary="Group deleted.")
 
 
 @chat.function(
@@ -435,7 +435,7 @@ async def list_inventory_sources(ctx, params: ListInventorySourcesParams) -> Act
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [InventorySource(id=d.get("id", 0), name=d.get("name", ""), source=d.get("source", ""), status=d.get("status", "")) for d in rows]
-    return ActionResult.ok(InventorySourceList(title="Inventory Sources", items=items))
+    return ActionResult.success(InventorySourceList(title="Inventory Sources", items=items), summary="Inventory sources listed.")
 
 
 @chat.function(
@@ -455,4 +455,4 @@ async def sync_inventory_source(ctx, params: SyncInventorySourceParams) -> Actio
         await ac.post_action(ctx, conn["api_base_url"], token, "inventory_sources", params.source_id, "update")
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Inventory source sync started."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Inventory source sync started."), summary="Inventory source sync requested.")

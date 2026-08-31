@@ -87,7 +87,7 @@ async def connect_ansible(ctx, params: ConnectAnsibleParams) -> ActionResult:
     }
     connections.append(entry)
     await _save_connections(ctx, connections)
-    return ActionResult.ok(_to_provider_connection(entry), message="Ansible Automation Platform instance connected.")
+    return ActionResult.success(_to_provider_connection(entry), message="Ansible Automation Platform instance connected.", summary="Ansible connected.")
 
 
 @chat.function(
@@ -102,7 +102,7 @@ async def list_connections(ctx, params: NoParams) -> ActionResult:
     """List connected instances."""
     connections = await _load_connections(ctx)
     items = [_to_provider_connection(c) for c in connections]
-    return ActionResult.ok(ProviderConnectionList(title="Connected Ansible Automation Platform instances", items=items))
+    return ActionResult.success(ProviderConnectionList(title="Connected Ansible Automation Platform instances", items=items), summary="Connections listed.")
 
 
 @chat.function(
@@ -122,4 +122,4 @@ async def disconnect_ansible(ctx, params: DisconnectAnsibleParams) -> ActionResu
     if len(remaining) == len(connections):
         return ActionResult.error(f"No connection found with id {params.connection_id}.", code="AAP_CONNECTION_NOT_FOUND")
     await _save_connections(ctx, remaining)
-    return ActionResult.ok(DeleteResult(ok=True, detail="Disconnected."), message="Disconnected.")
+    return ActionResult.success(DeleteResult(ok=True, detail="Disconnected."), message="Disconnected.", summary="Ansible disconnected.")

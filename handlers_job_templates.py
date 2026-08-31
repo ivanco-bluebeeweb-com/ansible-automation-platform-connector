@@ -50,7 +50,7 @@ async def list_job_templates(ctx, params: ListJobTemplatesParams) -> ActionResul
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [_to_jt(d) for d in rows]
-    return ActionResult.ok(JobTemplateList(items=items, count=len(items)))
+    return ActionResult.success(JobTemplateList(items=items, count=len(items)), summary="Job templates listed.")
 
 
 @chat.function(
@@ -71,7 +71,7 @@ async def get_job_template(ctx, params: GetJobTemplateParams) -> ActionResult:
         d = await ac.get_resource(ctx, conn["api_base_url"], token, "job_templates", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_jt(d))
+    return ActionResult.success(_to_jt(d), summary="Job template retrieved.")
 
 
 @chat.function(
@@ -106,7 +106,7 @@ async def create_job_template(ctx, params: CreateJobTemplateParams) -> ActionRes
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "job_templates", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_jt(d), message="Job Template created.")
+    return ActionResult.success(_to_jt(d), message="Job Template created.", summary="Job template created.")
 
 
 @chat.function(
@@ -140,7 +140,7 @@ async def update_job_template(ctx, params: UpdateJobTemplateParams) -> ActionRes
         d = await ac.update_resource(ctx, conn["api_base_url"], token, "job_templates", params.resource_id, payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_jt(d), message="Job Template updated.")
+    return ActionResult.success(_to_jt(d), message="Job Template updated.", summary="Job template updated.")
 
 
 @chat.function(
@@ -162,7 +162,7 @@ async def delete_job_template(ctx, params: DeleteJobTemplateParams) -> ActionRes
         await ac.delete_resource(ctx, conn["api_base_url"], token, "job_templates", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Job Template deleted."), message="Job Template deleted.")
+    return ActionResult.success(DeleteResult(ok=True, detail="Job Template deleted."), message="Job Template deleted.", summary="Job template deleted.")
 
 
 @chat.function(
@@ -191,7 +191,7 @@ async def launch_job_template(ctx, params: LaunchJobTemplateParams) -> ActionRes
         d = await ac.post_action(ctx, conn["api_base_url"], token, "job_templates", params.resource_id, "launch", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(
+    return ActionResult.success(
         JobLaunchResult(job_id=d.get("job", d.get("id", 0)), status=d.get("status", "pending"), detail="Launched."),
-        message="Job launched.",
+        message="Job launched.", summary="Launch job template done."
     )

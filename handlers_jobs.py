@@ -44,7 +44,7 @@ async def list_jobs(ctx, params: ListJobsParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [_to_job(d) for d in rows]
-    return ActionResult.ok(JobList(title="Jobs", items=items, count=len(items)))
+    return ActionResult.success(JobList(title="Jobs", items=items, count=len(items)), summary="Jobs listed.")
 
 
 @chat.function(
@@ -63,7 +63,7 @@ async def get_job(ctx, params: GetJobParams) -> ActionResult:
         d = await ac.get_resource(ctx, conn["api_base_url"], token, "jobs", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_job(d))
+    return ActionResult.success(_to_job(d), summary="Job retrieved.")
 
 
 @chat.function(
@@ -82,7 +82,7 @@ async def get_job_stdout(ctx, params: GetJobStdoutParams) -> ActionResult:
         text = await ac.get_stdout(ctx, conn["api_base_url"], token, params.resource_id, format_=params.format_)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(JobStdout(job_id=params.resource_id, output=text))
+    return ActionResult.success(JobStdout(job_id=params.resource_id, output=text), summary="Job stdout retrieved.")
 
 
 @chat.function(
@@ -103,7 +103,7 @@ async def cancel_job(ctx, params: CancelJobParams) -> ActionResult:
         d = await ac.get_resource(ctx, conn["api_base_url"], token, "jobs", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_job(d), message="Job cancel requested.")
+    return ActionResult.success(_to_job(d), message="Job cancel requested.", summary="Cancel job done.")
 
 
 @chat.function(
@@ -123,7 +123,7 @@ async def relaunch_job(ctx, params: RelaunchJobParams) -> ActionResult:
         d = await ac.post_action(ctx, conn["api_base_url"], token, "jobs", params.resource_id, "relaunch")
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(JobLaunchResult(job_id=d.get("id", 0), status=d.get("status", ""), detail="Job relaunched."))
+    return ActionResult.success(JobLaunchResult(job_id=d.get("id", 0), status=d.get("status", ""), detail="Job relaunched."), summary="Relaunch job done.")
 
 
 @chat.function(
@@ -146,7 +146,7 @@ async def bulk_cancel_jobs(ctx, params: BulkJobIdsParams) -> ActionResult:
             results.append(BulkJobResultItem(job_id=jid, ok=True, detail="Cancel requested."))
         except ac.ClientFail as e:
             results.append(BulkJobResultItem(job_id=jid, ok=False, detail=e.payload["error"]))
-    return ActionResult.ok(BulkJobResult(items=results))
+    return ActionResult.success(BulkJobResult(items=results), summary="Bulk cancel jobs done.")
 
 
 @chat.function(
@@ -166,4 +166,4 @@ async def list_job_events(ctx, params: ListJobEventsParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [JobEvent(id=d.get("id", 0), event=d.get("event", ""), stdout=d.get("stdout", ""), task=d.get("task", ""), host_name=d.get("host_name", ""), failed=bool(d.get("failed", False))) for d in rows]
-    return ActionResult.ok(JobEventList(title="Job Events", items=items))
+    return ActionResult.success(JobEventList(title="Job Events", items=items), summary="Job events listed.")

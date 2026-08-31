@@ -41,7 +41,7 @@ async def list_credentials(ctx, params: ListCredentialsParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [_to_cred(d) for d in rows]
-    return ActionResult.ok(CredentialList(title="Credentials", items=items, count=len(items)))
+    return ActionResult.success(CredentialList(title="Credentials", items=items, count=len(items)), summary="Credentials listed.")
 
 
 @chat.function(
@@ -60,7 +60,7 @@ async def get_credential(ctx, params: GetCredentialParams) -> ActionResult:
         d = await ac.get_resource(ctx, conn["api_base_url"], token, "credentials", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_cred(d))
+    return ActionResult.success(_to_cred(d), summary="Credential retrieved.")
 
 
 @chat.function(
@@ -88,7 +88,7 @@ async def create_credential(ctx, params: CreateCredentialParams) -> ActionResult
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "credentials", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_cred(d), message="Credential created.")
+    return ActionResult.success(_to_cred(d), message="Credential created.", summary="Credential created.")
 
 
 @chat.function(
@@ -108,7 +108,7 @@ async def delete_credential(ctx, params: DeleteCredentialParams) -> ActionResult
         await ac.delete_resource(ctx, conn["api_base_url"], token, "credentials", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Credential deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Credential deleted."), summary="Credential deleted.")
 
 
 @chat.function(
@@ -128,4 +128,4 @@ async def list_credential_types(ctx, params: ListCredentialTypesParams) -> Actio
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [CredentialType(id=d.get("id", 0), name=d.get("name", ""), kind=d.get("kind", "")) for d in rows]
-    return ActionResult.ok(CredentialTypeList(title="Credential Types", items=items))
+    return ActionResult.success(CredentialTypeList(title="Credential Types", items=items), summary="Credential types listed.")

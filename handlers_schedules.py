@@ -34,7 +34,7 @@ async def list_schedules(ctx, params: ListSchedulesParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [_to_sched(d) for d in rows]
-    return ActionResult.ok(ScheduleList(title="Schedules", items=items))
+    return ActionResult.success(ScheduleList(title="Schedules", items=items), summary="Schedules listed.")
 
 
 @chat.function(
@@ -55,7 +55,7 @@ async def create_schedule(ctx, params: CreateScheduleParams) -> ActionResult:
         d = await ac.post_action(ctx, conn["api_base_url"], token, "job_templates", params.resource_id, "schedules", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_sched(d), message="Schedule created.")
+    return ActionResult.success(_to_sched(d), message="Schedule created.", summary="Schedule created.")
 
 
 @chat.function(
@@ -75,7 +75,7 @@ async def set_schedule_enabled(ctx, params: SetScheduleEnabledParams) -> ActionR
         d = await ac.update_resource(ctx, conn["api_base_url"], token, "schedules", params.schedule_id, {"enabled": params.enabled})
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_sched(d), message="Schedule updated.")
+    return ActionResult.success(_to_sched(d), message="Schedule updated.", summary="Schedule enabled updated.")
 
 
 @chat.function(
@@ -95,4 +95,4 @@ async def delete_schedule(ctx, params: DeleteScheduleParams) -> ActionResult:
         await ac.delete_resource(ctx, conn["api_base_url"], token, "schedules", params.schedule_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Schedule deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Schedule deleted."), summary="Schedule deleted.")

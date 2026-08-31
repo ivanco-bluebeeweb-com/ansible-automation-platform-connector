@@ -32,7 +32,7 @@ async def list_organizations(ctx, params: ListOrganizationsParams) -> ActionResu
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [Organization(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", "")) for d in rows]
-    return ActionResult.ok(OrganizationList(title="Organizations", items=items))
+    return ActionResult.success(OrganizationList(title="Organizations", items=items), summary="Organizations listed.")
 
 
 @chat.function(
@@ -52,7 +52,7 @@ async def create_organization(ctx, params: CreateOrganizationParams) -> ActionRe
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "organizations", {"name": params.name, "description": params.description})
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(Organization(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", "")), message="Organization created.")
+    return ActionResult.success(Organization(id=d.get("id", 0), name=d.get("name", ""), description=d.get("description", "")), message="Organization created.", summary="Organization created.")
 
 
 @chat.function(
@@ -72,7 +72,7 @@ async def list_teams(ctx, params: ListTeamsParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [Team(id=d.get("id", 0), name=d.get("name", ""), organization=d.get("organization")) for d in rows]
-    return ActionResult.ok(TeamList(title="Teams", items=items))
+    return ActionResult.success(TeamList(title="Teams", items=items), summary="Teams listed.")
 
 
 @chat.function(
@@ -92,7 +92,7 @@ async def create_team(ctx, params: CreateTeamParams) -> ActionResult:
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "teams", {"name": params.name, "organization": params.organization})
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(Team(id=d.get("id", 0), name=d.get("name", ""), organization=d.get("organization")), message="Team created.")
+    return ActionResult.success(Team(id=d.get("id", 0), name=d.get("name", ""), organization=d.get("organization")), message="Team created.", summary="Team created.")
 
 
 @chat.function(
@@ -112,7 +112,7 @@ async def list_users(ctx, params: ListUsersParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [AAPUser(id=d.get("id", 0), username=d.get("username", ""), email=d.get("email", ""), is_superuser=bool(d.get("is_superuser", False))) for d in rows]
-    return ActionResult.ok(AAPUserList(title="Users", items=items))
+    return ActionResult.success(AAPUserList(title="Users", items=items), summary="Users listed.")
 
 
 @chat.function(
@@ -139,7 +139,7 @@ async def create_user(ctx, params: CreateUserParams) -> ActionResult:
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "users", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(AAPUser(id=d.get("id", 0), username=d.get("username", ""), email=d.get("email", ""), is_superuser=bool(d.get("is_superuser", False))), message="User created.")
+    return ActionResult.success(AAPUser(id=d.get("id", 0), username=d.get("username", ""), email=d.get("email", ""), is_superuser=bool(d.get("is_superuser", False))), message="User created.", summary="User created.")
 
 
 @chat.function(
@@ -159,4 +159,4 @@ async def delete_user(ctx, params: DeleteUserParams) -> ActionResult:
         await ac.delete_resource(ctx, conn["api_base_url"], token, "users", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="User deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail="User deleted."), summary="User deleted.")

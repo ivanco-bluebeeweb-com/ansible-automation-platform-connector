@@ -42,7 +42,7 @@ async def run_ad_hoc_command(ctx, params: RunAdHocCommandParams) -> ActionResult
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "ad_hoc_commands", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(AdHocCommand(id=d.get("id", 0), status=d.get("status", ""), module_name=d.get("module_name", "")), message="Ad hoc command launched.")
+    return ActionResult.success(AdHocCommand(id=d.get("id", 0), status=d.get("status", ""), module_name=d.get("module_name", "")), message="Ad hoc command launched.", summary="Ad hoc command run requested.")
 
 
 @chat.function(
@@ -62,7 +62,7 @@ async def list_ad_hoc_commands(ctx, params: ListAdHocCommandsParams) -> ActionRe
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [AdHocCommand(id=d.get("id", 0), status=d.get("status", ""), module_name=d.get("module_name", "")) for d in rows]
-    return ActionResult.ok(AdHocCommandList(title="Ad Hoc Commands", items=items))
+    return ActionResult.success(AdHocCommandList(title="Ad Hoc Commands", items=items), summary="Ad hoc commands listed.")
 
 
 def _to_nt(d: dict) -> NotificationTemplate:
@@ -86,7 +86,7 @@ async def list_notif_templates(ctx, params: ListNotificationTemplatesParams) -> 
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [_to_nt(d) for d in rows]
-    return ActionResult.ok(NotificationTemplateList(title="Notification Templates", items=items))
+    return ActionResult.success(NotificationTemplateList(title="Notification Templates", items=items), summary="Notif templates listed.")
 
 
 @chat.function(
@@ -114,7 +114,7 @@ async def create_notif_template(ctx, params: CreateNotificationTemplateParams) -
         d = await ac.create_resource(ctx, conn["api_base_url"], token, "notification_templates", payload)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(_to_nt(d), message="Notification template created.")
+    return ActionResult.success(_to_nt(d), message="Notification template created.", summary="Notif template created.")
 
 
 @chat.function(
@@ -134,7 +134,7 @@ async def delete_notif_template(ctx, params: DeleteNotificationTemplateParams) -
         await ac.delete_resource(ctx, conn["api_base_url"], token, "notification_templates", params.resource_id)
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Notification template deleted."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Notification template deleted."), summary="Notif template deleted.")
 
 
 @chat.function(
@@ -154,4 +154,4 @@ async def test_notif_template(ctx, params: TestNotificationTemplateParams) -> Ac
         await ac.post_action(ctx, conn["api_base_url"], token, "notification_templates", params.resource_id, "test")
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
-    return ActionResult.ok(DeleteResult(ok=True, detail="Test notification sent."))
+    return ActionResult.success(DeleteResult(ok=True, detail="Test notification sent."), summary="Test notif template done.")

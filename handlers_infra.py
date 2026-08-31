@@ -32,7 +32,7 @@ async def list_instances(ctx, params: ListInstancesParams) -> ActionResult:
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [Instance(id=d.get("id", 0), hostname=d.get("hostname", ""), node_type=d.get("node_type", ""), capacity=d.get("capacity", 0), enabled=bool(d.get("enabled", True))) for d in rows]
-    return ActionResult.ok(InstanceList(title="Instances", items=items))
+    return ActionResult.success(InstanceList(title="Instances", items=items), summary="Instances listed.")
 
 
 @chat.function(
@@ -52,7 +52,7 @@ async def list_instance_groups(ctx, params: ListInstanceGroupsParams) -> ActionR
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [InstanceGroup(id=d.get("id", 0), name=d.get("name", ""), capacity=d.get("capacity", 0)) for d in rows]
-    return ActionResult.ok(InstanceGroupList(title="Instance Groups", items=items))
+    return ActionResult.success(InstanceGroupList(title="Instance Groups", items=items), summary="Instance groups listed.")
 
 
 @chat.function(
@@ -72,4 +72,4 @@ async def list_exec_environments(ctx, params: ListExecutionEnvironmentsParams) -
     except ac.ClientFail as e:
         return ActionResult.error(e.payload["error"], code=e.payload["error_code"])
     items = [ExecutionEnvironment(id=d.get("id", 0), name=d.get("name", ""), image=d.get("image", "")) for d in rows]
-    return ActionResult.ok(ExecutionEnvironmentList(title="Execution Environments", items=items))
+    return ActionResult.success(ExecutionEnvironmentList(title="Execution Environments", items=items), summary="Exec environments listed.")
