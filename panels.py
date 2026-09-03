@@ -44,8 +44,7 @@ def _settings_button() -> ui.UINode:
     """The one required secondary entry point into the settings screen --
     always the last element at the bottom of the sidebar."""
     return ui.Button(
-        "App settings", variant="secondary", size="sm", full_width=True,
-        icon="settings", on_click=ui.Call("__panel__ansible_settings"),
+        "App settings", variant="secondary", size="sm", icon="settings", on_click=ui.Call("__panel__ansible_settings"),
     )
 
 
@@ -156,8 +155,7 @@ async def ansible_connect_panel(ctx, **kwargs) -> object:
         ui.Text(f"Job Templates -- {first.get('label') or first.get('api_base_url', '')}", variant="subtitle"),
         _job_templates_section(templates),
         ui.Divider(),
-        ui.Button("View controller audit", variant="primary", size="sm", full_width=True,
-                  icon="LayoutDashboard", on_click=ui.Call("__panel__ansible_center")),
+        ui.Button("View controller audit", variant="primary", size="sm", icon="LayoutDashboard", on_click=ui.Call("__panel__ansible_center")),
         ui.Divider(),
         _settings_button(),
     ])
